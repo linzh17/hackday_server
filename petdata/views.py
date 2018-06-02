@@ -12,23 +12,36 @@ import json
 
 #登录验证部分
 def signUp(request):
-	username = request.GET['username']
-	password = request.GET['password']
+	print request
+	username = request.POST['username']
+	print username
+	password = request.POST['password']
+	email = request.POST['email']
 	AttrIf = models.User.objects.filter(user_name = username)
-	if AttrIf==True :
+	print "attif:",AttrIf
+	if  (AttrIf) :
+		print("chongFu")
 		return HttpResponse("0")
-	Attr = models.User(user_name = username , password = password)
-	Attr.save()
-	Attrjson = {'username': Attr.user_name}
-	return HttpResponse(json.dumps(Attrjson))
+	else:
+		Attr = models.User(user_name = username , password = password, email = email)
+		Attr.save()
+		Attrjson = {'username': Attr.user_name}
+		print Attrjson
+		return HttpResponse(json.dumps(Attrjson))
 
 def login(request):
 	print request
 	username = request.GET['username']
 	password = request.GET['password']
-	Attr = models.User.objects.get(user_name = username , password = password)
-	Attrjson = {'username': Attr.user_name}
-	return HttpResponse(json.dumps(Attrjson))
+	Attr = models.User.objects.filter(user_name = username , password = password)
+	
+	if (Attr):
+		Attrjson = {'username': Attr.user_name}
+		print("success login")
+		return HttpResponse(json.dumps(Attrjson))
+	else :
+		print("error login")
+		return HttpResponse("0")
 	
 #宠物有关部分　
 def createPet(request):
