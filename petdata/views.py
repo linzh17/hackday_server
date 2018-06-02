@@ -166,5 +166,20 @@ def cleanPet(request):	#清洗宠物
 	return HttpResponse(json.dumps(status)) #返回状态(json)
 
 
+#返回好友列表
+def showFriends(request):
+	username =  request.POST['username']
+	user = User.objects.filter(user_name=username).first()
+	friends = User.objects.filter(friends= user).all()
+	peoples={}
+	for friend in friends:
+		people={"username":friend.user_name,"pet":friend.pet,}
+		peoples.append(people)
+
+	return HttpResponse(json.dump(peoples))	 	
+
+
+
+
 def func4(request):
 	return HttpResponse("4")
