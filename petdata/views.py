@@ -94,4 +94,5 @@ def followFriends(request):
 	friend_user.save()
 	return HttpResponse("success")
 
- 
+def havePet(request):
+	 
