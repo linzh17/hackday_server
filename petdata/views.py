@@ -13,11 +13,13 @@ import json
 def signUp(request):
 	username = request.GET['username']
 	password = request.GET['password']
+	AttrIf = models.User.objects.filter(user_name = username)
+	if AttrIf==True :
+		return HttpResponse("0")
 	Attr = models.User(user_name = username , password = password)
 	Attr.save()
 	Attrjson = {'username': Attr.user_name}
 	return HttpResponse(json.dumps(Attrjson))
-
 
 def login(request):
 	print request
@@ -36,9 +38,16 @@ def createPet(request):
 	petstatus = model.Pet_State(pet_name = pet)
 	return HttpResponse("success")
 
-def petStatus(request):
-	petname = request.GET['']
-	return HttpResponse("3")
+def getPetStatus(request):
+	petname = request.GET['petname']
+	pet = models.Pet.objects.get(pet_name = petname)
+	petstatus = pet.Pet_State
+	status = {
+		pet_hunger: petstatus.pet_hunger,
+		pet_clean: petstatus.pet_hunger,
+		pet_love: petstatus.pet_love
+	}
+	return HttpResponse(json.dumps(status))
 
 def func4(request):
 	return HttpResponse("4")
