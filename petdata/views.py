@@ -42,3 +42,12 @@ def petStatus(request):
 
 def func4(request):
 	return HttpResponse("4")
+
+def followFriends(request):
+	username = request.GET['username']
+	friendname = request.GET['friendname']
+	user = models.User.objects.get(user_name = username)
+	friend_user = models.User.objects.get(user_name = friendname)
+	user.friends.append(friend_user)
+	return HttpResponse("success")
+
