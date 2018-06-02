@@ -32,11 +32,13 @@ def login(request):
 	
 #宠物有关部分　
 def createPet(request):
-	owner = request.GET['username']
+	username = request.GET['username']
 	petname = request.GET['petname']
-	pet = models.Pet(pet_name = petname, owner = owner )
+	pet = models.Pet(pet_name = petname)
 	pet.save()
 	petstatus = models.Pet_State(pet_name = pet)
+	user = models.User.objects.get(user_name = username)
+	user.pet = pet
 	return HttpResponse("success")
 
 def getPetStatus(request):
@@ -55,14 +57,14 @@ def showPet(request):
 	peoples={}
 	p_owners={}
 	for pet in pets:
-		owners = pet.owner
-		for owner in  owners:
-			p_owner={"name":owner.user_name}
+		owners = User.objects.filter(pet = pet).all()
+		for owner in p_owners:
+			p_owner = {"name":owner.user_name}
 			p_owners.append(p_owner)
 		people={"pet_name":pet.pet_name,"p_owners":p_owners}
 		peoples.append(people)
-	return HttpResponse(json.dumps(peoples))	
-		
+	return HttpResponse(json.dumps(peoples))		
+			
 
 def func4(request):
 	return HttpResponse("4")
@@ -73,7 +75,10 @@ def followFriends(request):
 	friendname = request.GET['friendname']
 	user = models.User.objects.get(user_name = username)
 	friend_user = models.User.objects.get(user_name = friendname)
-	user.friends.append(friend_user)
+	user.friends=friend_user
+	friend_user.friends = user
+	user.save()
+	friend_user.save()
 	return HttpResponse("success")
 
  
