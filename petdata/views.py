@@ -138,9 +138,9 @@ def havePet(request):	#领养已经有人在养的宠物
 	return HttpResponse("success")
 
 def feedPet(request):	#喂养宠物
-	username = request.POST['username']
+	username = request.POST['username'] #不一定要
 	petname = request.POST['petname']
-	user = User.objects.filter(user_name = username)
+	user = User.objects.filter(user_name = username) #不一定要
 	pet = Pet.objects.filter(pet_name = petname)
 	pet.pet_state.pet_hunger = 	pet.pet_state.pet_hunger +10 #清洁度增加
 	pet.pet_state.pet_love = pet.pet_state.pet_love + 1 #爱心增加
@@ -152,9 +152,9 @@ def feedPet(request):	#喂养宠物
 	return HttpResponse(json.dumps(status)) #返回状态(json)
 
 def cleanPet(request):	#清洗宠物
-	username = request.POST['username']
+	username = request.POST['username'] #不一定要
 	petname = request.POST['petname']
-	user = User.objects.filter(user_name = username)
+	user = User.objects.filter(user_name = username) #不一定要
 	pet = Pet.objects.filter(pet_name = petname)
 	pet.pet_state.pet_clean = 	pet.pet_state.pet_clean +10 #清洁度增加
 	pet.pet_state.pet_love = pet.pet_state.pet_love + 1 #爱心增加
