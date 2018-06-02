@@ -22,7 +22,12 @@ urlpatterns = [
     url(r'^login/', petdata_views.login),
     url(r'^createPet/', petdata_views.createPet),
     url(r'^getPetStatus/', petdata_views.getPetStatus),
+    url(r'^showAllPet/', petdata_views.showAllPet),
+    url(r'^showOnePet/', petdata_views.showOnePet),
     url(r'^followFriends/', petdata_views.followFriends),
+    url(r'^havePet/', petdata_views.havePet),
+    url(r'^feedPet/', petdata_views.feedPet),
+    url(r'^cleanPet/', petdata_views.cleanPet),
     url(r'^4/', petdata_views.func4)
 ]
 
