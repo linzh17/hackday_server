@@ -19,10 +19,10 @@ def signUp(request):
 	email = request.POST['email']
 	AttrIf = models.User.objects.filter(user_name = username)
 	print "attif:",AttrIf
-	if  (AttrIf) :
+	if  (AttrIf) : #如果AttrIf不为空
 		print("chongFu")
 		return HttpResponse("0")
-	else:
+	else: #否则
 		Attr = models.User(user_name = username , password = password, email = email)
 		Attr.save()
 		Attrjson = {'username': Attr.user_name}
@@ -35,11 +35,11 @@ def login(request):
 	password = request.GET['password']
 	Attr = models.User.objects.filter(user_name = username , password = password)
 	
-	if (Attr):
+	if (Attr): #如果Attr不为空
 		Attrjson = {'username': Attr.user_name}
 		print("success login")
 		return HttpResponse(json.dumps(Attrjson))
-	else :
+	else : #否则
 		print("error login")
 		return HttpResponse("0")
 	
@@ -63,62 +63,95 @@ def getPetStatus(request):
 		pet_clean: petstatus.pet_hunger,
 		pet_love: petstatus.pet_love
 	}
-	return HttpResponse(json.dumps(status))
+	return HttpResponse(json.dumps(status)) #返回宠物状态(json)
 
-def showPet(request):
+def showAllPet(request): #获得所有宠物及其主人们的信息
 	pets = models.Pet.objects.all()
-	peoples={}
-	p_owners={}
-	for pet in pets:
-		owners = User.objects.filter(pet = pet).all()
-		for owner in p_owners:
-			p_owner = {"name":owner.user_name}
+	peoples={}  #先声明以便append
+	p_owners={} #先声明以便append
+	for pet in pets: #循环
+		owners = models.User.objects.filter(pet = pet).all() 
+		for owner in owners:
+			p_owner = {
+				"name":owner.user_name， #必须加逗号
+			}
 			p_owners.append(p_owner)
-		people={"pet_name":pet.pet_name,"p_owners":p_owners}
+
+		people={
+			"pet_name":pet.pet_name,
+			"p_owners":p_owners,
+		}
 		peoples.append(people)
 	return HttpResponse(json.dumps(peoples))		
-			
 
-def func4(request):
-	return HttpResponse("4")
+def showOnePet(request): #获得所有宠物及其主人们的信息
+	p_owners={} #先声明以便append
+	owners = models.User.objects.filter(pet = pet).all() 
+	for owner in owners:
+		p_owner = {
+			"name":owner.user_name,
+		}
+		p_owners.append(p_owner)
+
+	people={
+		"pet_name":pet.pet_name,
+		"p_owners":p_owners
+	}
+	
+	return HttpResponse(json.dumps(people))
+
 
 #用户交际部分
-def followFriends(request):
+def followFriends(request):		#可能不需要
 	username = request.POST['username']
 	friendname = request.POST['friendname']
 	user = models.User.objects.get(user_name = username)
 	friend_user = models.User.objects.get(user_name = friendname)
-	user.friends=friend_user
-	friend_user.friends = user
+	if not friend_user:
+		return HttpResponse("Cannot find friend")
+	user.friends=friend_user #把用户朋友值设为朋友 
+	friend_user.friends = user #把朋友朋友值设为用户
 	user.save()
 	friend_user.save()
 	return HttpResponse("success")
 
-def havePet(request):
+def havePet(request):	#领养已经有人在养的宠物
 	username = request.POST['username']
-	petname = request.POST['petname']
+	petname = request.POST['petname'] 
 	user = User.objects.get(user_name = username)
 	pet = Pet.objects.get(pet_name = petname)
 	user.pet = pet
 	user.save()
 	return HttpResponse("success")
 
-def feedPet(request):
+def feedPet(request):	#喂养宠物
 	username = request.POST['username']
 	petname = request.POST['petname']
 	user = User.objects.get(user_name = username)
 	pet = Pet.objects.get(pet_name = petname)
-	pet.pet_state.pet_hunger = 	pet.pet_state.pet_hunger +10
-	pet.pet_state.pet_love = pet.pet_state.pet_love + 1
+	pet.pet_state.pet_hunger = 	pet.pet_state.pet_hunger +10 #清洁度增加
+	pet.pet_state.pet_love = pet.pet_state.pet_love + 1 #爱心增加
 	pet.save()
-	return HttpResponse("success")
+	status = {
+		petlove:pet.pet_state.pet_love,
+		pethunger:pet.pet_state.pet_hunger
+	}
+	return HttpResponse(json.dumps(status)) #返回状态(json)
 
-def cleanPet(request):
+def cleanPet(request):	#清洗宠物
 	username = request.POST['username']
 	petname = request.POST['petname']
 	user = User.objects.get(user_name = username)
 	pet = Pet.objects.get(pet_name = petname)
-	pet.pet_state.pet_clean = 	pet.pet_state.pet_clean +10
-	pet.pet_state.pet_love = pet.pet_state.pet_love + 1
+	pet.pet_state.pet_clean = 	pet.pet_state.pet_clean +10 #清洁度增加
+	pet.pet_state.pet_love = pet.pet_state.pet_love + 1 #爱心增加
 	pet.save()
-	return HttpResponse("success")
+	status = {
+		petlove:pet.pet_state.pet_love,
+		pethunger:pet.pet_state.pet_clean
+	}
+	return HttpResponse(json.dumps(status)) #返回状态(json)
+
+
+def func4(request):
+	return HttpResponse("4")
