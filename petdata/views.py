@@ -43,6 +43,18 @@ def login(request):
 		print("error login")
 		return HttpResponse("0")
 	
+def getUserStatus(request): #获取用户的宠物信息
+	username = request.GET['username']
+	user = models.User.objects.filter(user_name = username)
+	pet = user.pet 
+	if (pet):
+		petjson = {
+			petname : pet.pet_name,
+		}
+		HttpResponse(json.dumps(petjson))
+	else HttpResponse("noPet")
+
+
 #宠物有关部分　
 def createPet(request):
 	username = request.POST['username']

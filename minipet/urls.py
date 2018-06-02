@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^signUp/', petdata_views.signUp),
     url(r'^login/', petdata_views.login),
+    url(r'^getUserStatus/', petdata_views.getUserStatus),
     url(r'^createPet/', petdata_views.createPet),
     url(r'^getPetStatus/', petdata_views.getPetStatus),
     url(r'^showAllPet/', petdata_views.showAllPet),

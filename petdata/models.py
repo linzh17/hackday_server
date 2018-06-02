@@ -8,7 +8,6 @@ class User(models.Model):
     user_name = models.CharField("user_name",max_length=128,primary_key=True,default = "0")
     email = models.CharField("email",max_length=128,unique = True,default = "0")
     password = models.IntegerField(default=1) 
-
     friends = models.ForeignKey('self',null=True)
     pet = models.ForeignKey('Pet',null=True)
 
