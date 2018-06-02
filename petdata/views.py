@@ -82,7 +82,7 @@ def showAllPet(request): #获得所有宠物及其主人们的信息
 	peoples={}  #先声明以便append
 	p_owners={} #先声明以便append
 	for pet in pets: #循环
-		owners = models.User.objects.filter(pet = pet).all() 
+		owners = models.User.objects.filter(pet_name = pet).all() 
 		for owner in owners:
 			p_owner = {
 				"name":owner.user_name， #必须加逗号
@@ -97,8 +97,9 @@ def showAllPet(request): #获得所有宠物及其主人们的信息
 	return HttpResponse(json.dumps(peoples))		
 
 def showOnePet(request): #获得所有宠物及其主人们的信息
+	pet = request.GET['petname']
 	p_owners={} #先声明以便append
-	owners = models.User.objects.filter(pet = pet).all() 
+	owners = models.User.objects.filter(pet_name = pet).all() 
 	for owner in owners:
 		p_owner = {
 			"name":owner.user_name,
