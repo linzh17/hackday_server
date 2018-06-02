@@ -5,30 +5,13 @@ from django.db import models
 
 # Create your models here.
 class User(models.Model):
-    pass
+    user_name = models.CharField("user_name",max_length=128,primary_key=True,default = "0")
+    email = models.CharField("email",max_length=128,unique = True,default = "0")
+    password = models.IntegerField(default=1) 
 
-class Pet(models.Model):
-    id = models.IntegerField(primary_key=True)
-    pet_name = models.CharField(max_length = 100)
-    user_list = models.ForeignKey(User)
-
-    def __str__(self):
-        return '<Pet %s>' % (self.pet_name)
-
-class Pet_State(models.Model):
-    pet = models.OneToOneField(Pet,primary_key = True)
-    pet_clean = models.IntegerField()
-    pet_hunger = models.IntegerField()
+    #friends = models.ForeignKey(User)
 
     def __str__(self):
-        return '<Pet_state %s %s %s>' %(self.pet,self.pet_clean,self.pet_hunger)
+        return 'User %s %s' %(self.user_name,self.email)
 
-class Goods(models.Model):
-    id = models.IntegerField(primary_key=True)
-    name = models.CharField(max_length = 50)
-    user_info = models.ForeignKey(User)
-    cookies = models.BooleanField() 
-    soap = models.BooleanField()
-
-    def __str__(self):
-        return '<Goods %s %s %s>' %(self.name,self.cookies,self.soap)
+        
