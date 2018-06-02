@@ -18,9 +18,11 @@ from django.contrib import admin
 from petdata import views as petdata_views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^1/', petdata_views.func1),
-    url(r'^2/', petdata_views.func2),
-    url(r'^3/', petdata_views.func3),
+    url(r'^signUp/', petdata_views.signUp),
+    url(r'^login/', petdata_views.login),
+    url(r'^createPet/', petdata_views.createPet),
+    url(r'^getPetStatus/', petdata_views.getPetStatus),
+    url(r'^followFriends/', petdata_views.followFriends),
     url(r'^4/', petdata_views.func4)
 ]
 

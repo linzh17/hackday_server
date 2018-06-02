@@ -35,7 +35,7 @@ def createPet(request):
 	petname = request.GET['petname']
 	pet = models.Pet(pet_name = petname, owner = owner )
 	pet.save()
-	petstatus = model.Pet_State(pet_name = pet)
+	petstatus = models.Pet_State(pet_name = pet)
 	return HttpResponse("success")
 
 def getPetStatus(request):
