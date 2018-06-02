@@ -45,8 +45,8 @@ def login(request):
 	
 #宠物有关部分　
 def createPet(request):
-	username = request.GET['username']
-	petname = request.GET['petname']
+	username = request.POST['username']
+	petname = request.POST['petname']
 	pet = models.Pet(pet_name = petname)
 	pet.save()
 	petstatus = models.Pet_State(pet_name = pet)
