@@ -1,2 +1,2 @@
-#run:
-nohup.out
+*.pyc
+db.sqlite3
