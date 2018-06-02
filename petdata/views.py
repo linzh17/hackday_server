@@ -84,8 +84,8 @@ def func4(request):
 
 #用户交际部分
 def followFriends(request):
-	username = request.GET['username']
-	friendname = request.GET['friendname']
+	username = request.POST['username']
+	friendname = request.POST['friendname']
 	user = models.User.objects.get(user_name = username)
 	friend_user = models.User.objects.get(user_name = friendname)
 	user.friends=friend_user
@@ -95,4 +95,30 @@ def followFriends(request):
 	return HttpResponse("success")
 
 def havePet(request):
-	 
+	username = request.POST['username']
+	petname = request.POST['petname']
+	user = User.objects.get(user_name = username)
+	pet = Pet.objects.get(pet_name = petname)
+	user.pet = pet
+	user.save()
+	return HttpResponse("success")
+
+def feedPet(request):
+	username = request.POST['username']
+	petname = request.POST['petname']
+	user = User.objects.get(user_name = username)
+	pet = Pet.objects.get(pet_name = petname)
+	pet.pet_state.pet_hunger = 	pet.pet_state.pet_hunger +10
+	pet.pet_state.pet_love = pet.pet_state.pet_love + 1
+	pet.save()
+	return HttpResponse("success")
+
+def cleanPet(request):
+	username = request.POST['username']
+	petname = request.POST['petname']
+	user = User.objects.get(user_name = username)
+	pet = Pet.objects.get(pet_name = petname)
+	pet.pet_state.pet_clean = 	pet.pet_state.pet_clean +10
+	pet.pet_state.pet_love = pet.pet_state.pet_love + 1
+	pet.save()
+	return HttpResponse("success")
