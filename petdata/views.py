@@ -50,13 +50,13 @@ def createPet(request):
 	pet = models.Pet(pet_name = petname)
 	pet.save()
 	petstatus = models.Pet_State(pet_name = pet)
-	user = models.User.objects.get(user_name = username)
+	user = models.User.objects.filter(user_name = username)
 	user.pet = pet
 	return HttpResponse("success")
 
 def getPetStatus(request):
 	petname = request.GET['petname']
-	pet = models.Pet.objects.get(pet_name = petname)
+	pet = models.Pet.objects.filter(pet_name = petname)
 	petstatus = pet.Pet_State
 	status = {
 		pet_hunger: petstatus.pet_hunger,
@@ -105,8 +105,8 @@ def showOnePet(request): #获得所有宠物及其主人们的信息
 def followFriends(request):		#可能不需要
 	username = request.POST['username']
 	friendname = request.POST['friendname']
-	user = models.User.objects.get(user_name = username)
-	friend_user = models.User.objects.get(user_name = friendname)
+	user = models.User.objects.filter(user_name = username)
+	friend_user = models.User.objects.filter(user_name = friendname)
 	if not friend_user:
 		return HttpResponse("Cannot find friend")
 	user.friends=friend_user #把用户朋友值设为朋友 
@@ -118,8 +118,8 @@ def followFriends(request):		#可能不需要
 def havePet(request):	#领养已经有人在养的宠物
 	username = request.POST['username']
 	petname = request.POST['petname'] 
-	user = User.objects.get(user_name = username)
-	pet = Pet.objects.get(pet_name = petname)
+	user = User.objects.filter(user_name = username)
+	pet = Pet.objects.filter(pet_name = petname)
 	user.pet = pet
 	user.save()
 	return HttpResponse("success")
@@ -127,8 +127,8 @@ def havePet(request):	#领养已经有人在养的宠物
 def feedPet(request):	#喂养宠物
 	username = request.POST['username']
 	petname = request.POST['petname']
-	user = User.objects.get(user_name = username)
-	pet = Pet.objects.get(pet_name = petname)
+	user = User.objects.filter(user_name = username)
+	pet = Pet.objects.filter(pet_name = petname)
 	pet.pet_state.pet_hunger = 	pet.pet_state.pet_hunger +10 #清洁度增加
 	pet.pet_state.pet_love = pet.pet_state.pet_love + 1 #爱心增加
 	pet.save()
@@ -141,8 +141,8 @@ def feedPet(request):	#喂养宠物
 def cleanPet(request):	#清洗宠物
 	username = request.POST['username']
 	petname = request.POST['petname']
-	user = User.objects.get(user_name = username)
-	pet = Pet.objects.get(pet_name = petname)
+	user = User.objects.filter(user_name = username)
+	pet = Pet.objects.filter(pet_name = petname)
 	pet.pet_state.pet_clean = 	pet.pet_state.pet_clean +10 #清洁度增加
 	pet.pet_state.pet_love = pet.pet_state.pet_love + 1 #爱心增加
 	pet.save()
