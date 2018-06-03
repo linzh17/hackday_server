@@ -77,7 +77,7 @@ def getPetStatus(request):
 	petstatus = pet.pet_state
 	status = {
 		"pet_hunger": petstatus.pet_hunger,
-		"pet_clean": petstatus.pet_hunger,
+		"pet_clean": petstatus.pet_clean,
 		"pet_love": petstatus.pet_love
 	}
 	return HttpResponse(json.dumps(status)) #返回宠物状态(json)
