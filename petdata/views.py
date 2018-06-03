@@ -36,7 +36,7 @@ def login(request):
 	Attr = models.User.objects.filter(user_name = username , password = password)
 	
 	if (Attr): #如果Attr不为空
-		Attrjson = {'username': Attr.user_name}
+		Attrjson = {'username': Attr.first().user_name}
 		print("success login")
 		return HttpResponse(json.dumps(Attrjson))
 	else : #否则
@@ -45,14 +45,17 @@ def login(request):
 	
 def getUserStatus(request): #获取用户的宠物信息
 	username = request.GET['username']
-	user = models.User.objects.filter(user_name = username)
-	pet = user.pet 
-	if (pet):
+	user = models.User.objects.filter(user_name = username).first()
+	
+	if (user):
+		pet = user.pet
 		petjson = {
-			petname : pet.pet_name,
+			"petname" : pet.pet_name,
 		}
-		HttpResponse(json.dumps(petjson))
-	else HttpResponse("noPet")
+		return HttpResponse(json.dumps(petjson))
+	else:
+		print("noPet")
+		return HttpResponse("0")
 
 
 #宠物有关部分　
@@ -61,19 +64,21 @@ def createPet(request):
 	petname = request.POST['petname']
 	pet = models.Pet(pet_name = petname)
 	pet.save()
-	petstatus = models.Pet_State(pet_name = pet)
-	user = models.User.objects.filter(user_name = username)
+	petstatus = models.Pet_State(Pet_name = pet)
+	petstatus.save()
+	user = models.User.objects.filter(user_name = username).first()
 	user.pet = pet
-	return HttpResponse("success")
+	user.save()
+	return HttpResponse("1")
 
 def getPetStatus(request):
 	petname = request.GET['petname']
-	pet = models.Pet.objects.filter(pet_name = petname)
-	petstatus = pet.Pet_State
+	pet = models.Pet.objects.filter(pet_name = petname).first()
+	petstatus = pet.pet_state
 	status = {
-		pet_hunger: petstatus.pet_hunger,
-		pet_clean: petstatus.pet_hunger,
-		pet_love: petstatus.pet_love
+		"pet_hunger": petstatus.pet_hunger,
+		"pet_clean": petstatus.pet_hunger,
+		"pet_love": petstatus.pet_love
 	}
 	return HttpResponse(json.dumps(status)) #返回宠物状态(json)
 
@@ -82,10 +87,10 @@ def showAllPet(request): #获得所有宠物及其主人们的信息
 	peoples={}  #先声明以便append
 	p_owners={} #先声明以便append
 	for pet in pets: #循环
-		owners = models.User.objects.filter(pet_name = pet).all() 
+		owners = models.User.objects.filter(pet = pet).all() 
 		for owner in owners:
 			p_owner = {
-				"name":owner.user_name， #必须加逗号
+				"name":owner.user_name, #必须加逗号
 			}
 			p_owners.append(p_owner)
 
@@ -131,11 +136,11 @@ def followFriends(request):		#可能不需要
 def havePet(request):	#领养已经有人在养的宠物
 	username = request.POST['username']
 	petname = request.POST['petname'] 
-	user = User.objects.filter(user_name = username)
-	pet = Pet.objects.filter(pet_name = petname)
+	user = models.User.objects.filter(user_name = username).first()
+	pet = models.Pet.objects.filter(pet_name = petname).first()
 	user.pet = pet
 	user.save()
-	return HttpResponse("success")
+	return HttpResponse("1")
 
 def feedPet(request):	#喂养宠物
 	username = request.POST['username'] #不一定要
