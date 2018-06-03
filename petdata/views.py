@@ -86,6 +86,7 @@ def showAllPet(request): #获得所有宠物及其主人们的信息
 	pets = models.Pet.objects.all()
 	peoples={}  #先声明以便append
 	p_owners={} #先声明以便append
+	i = 0
 	for pet in pets: #循环
 		owners = models.User.objects.filter(pet = pet).all() 
 		for owner in owners:
@@ -102,14 +103,17 @@ def showAllPet(request): #获得所有宠物及其主人们的信息
 	return HttpResponse(json.dumps(peoples))		
 
 def showOnePet(request): #获得所有宠物及其主人们的信息
-	pet = request.GET['petname']
+	petname = request.GET['petname']
 	p_owners={} #先声明以便append
-	owners = models.User.objects.filter(pet_name = pet).all() 
+	pet = models.Pet.objects.filter(pet_name = petname).first()
+	owners = models.User.objects.filter(pet = pet).all() 
+	i = 0
 	for owner in owners:
 		p_owner = {
 			"name":owner.user_name,
 		}
-		p_owners.append(p_owner)
+		p_owners[i] = p_owner
+		i += 1
 
 	people={
 		"pet_name":pet.pet_name,
@@ -147,8 +151,10 @@ def feedPet(request):	#喂养宠物
 	petname = request.POST["petname"]
 	#user = User.objects.filter(user_name = username) #不一定要
 	pet = models.Pet.objects.filter(pet_name = petname).first()
-	pet.pet_state.pet_hunger = 	pet.pet_state.pet_hunger +10 #清洁度增加
+	pet.pet_state.pet_hunger = 	pet.pet_state.pet_hunger +5 #清洁度增加
 	pet.pet_state.pet_love = pet.pet_state.pet_love + 1 #爱心增加
+	if pet.pet_state.pet_hunger > 100 :
+		pet.pet_state.pet_hunger = 100
 	pet.pet_state.save()
 	status = {
 		"petlove":pet.pet_state.pet_love,
@@ -161,12 +167,14 @@ def cleanPet(request):	#清洗宠物
 	petname = request.POST['petname']
 	#user = User.objects.filter(user_name = username) #不一定要
 	pet = models.Pet.objects.filter(pet_name = petname).first()
-	pet.pet_state.pet_clean = 	pet.pet_state.pet_clean +10 #清洁度增加
+	pet.pet_state.pet_clean = 	pet.pet_state.pet_clean +5 #清洁度增加
 	pet.pet_state.pet_love = pet.pet_state.pet_love + 1 #爱心增加
+	if pet.pet_state.pet_clean > 100 :
+		pet.pet_state.pet_clean = 100
 	pet.pet_state.save()
 	status = {
 		"petlove":pet.pet_state.pet_love,
-		"pethunger":pet.pet_state.pet_clean
+		"petclean":pet.pet_state.pet_clean
 	}
 	return HttpResponse(json.dumps(status)) #返回状态(json)
 
